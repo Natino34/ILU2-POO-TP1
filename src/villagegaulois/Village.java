@@ -39,7 +39,10 @@ public class Village {
 		}
 		
 		private int trouverEtalLibre() {
-			for (int i = 0; i < etals.length; i++) if(!etals[i].isEtalOccupe()) return i;
+			for (int i = 0; i < etals.length; i++) {
+				
+				if(!etals[0].isEtalOccupe()) return i;
+			}
 			return -1;
 		}
 		
@@ -101,4 +104,41 @@ public class Village {
 		}
 		return chaine.toString();
 	}
+	
+	public String installerVendeur(Gaulois vendeur, String produit, int nbProduit) {
+		StringBuilder chaine = new StringBuilder();
+		chaine.append(vendeur.getNom() + " cherche un endroit pour vendre " + nbProduit + " " + produit +".\n");
+		int indiceEtal=marche.trouverEtalLibre();
+		if(indiceEtal==-1) {
+			chaine.append("Mais Malheureusement il n'y a plus d'étal disponnible.");
+		}
+		else {
+			marche.utiliserEtal( indiceEtal, vendeur, produit, nbProduit);
+			chaine.append("Le vendeur "+ vendeur.getNom() + " vend des " + produit + " à l'étal n°" + indiceEtal);
+		}
+		return chaine.toString();
+	}
+	
+	public String rechercherVendeursProduits(String produit) {
+		StringBuilder chaine = new StringBuilder();
+		Etal[] etals = new Etal[10];
+		etals=marche.trouverEtals(produit);
+		if(etals.length==0)
+		{
+			chaine.append("Il n'y a pas de vendeur qui propose des " + produit + " au marché.");
+		}
+		else if (etals.length==1)
+		{
+			chaine.append("Seul le vendeur Bonemine vend des fleurs au marché.");
+		}
+		else
+		{
+			chaine.append("Les vendeurs qui proposent des fleurs sont :\n");
+			for(int i=0; i<etals.length; i++) {
+			chaine.append("- "+(etals[i].getVendeur()).getNom() +"\n");
+			}
+		}
+		return chaine.toString();
+	}
+	
 }
