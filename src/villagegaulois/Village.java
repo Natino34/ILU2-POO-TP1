@@ -31,25 +31,41 @@ public class Village {
 		
 		private Marche(int nbEtal) {
 			etals = new Etal[nbEtal];
+			for(int i=0; i<nbEtal; i++) {
+				Etal etal= new Etal();
+				etals[i]=etal;
+			}
 		}
 		
 		private void utiliserEtal(int indiceEtal, Gaulois vendeur, String produit, int nbProduit) {
 			Etal etal = new Etal();
+			etals[indiceEtal]=etal;
 			etal.occuperEtal(vendeur, produit, nbProduit);
 		}
 		
 		private int trouverEtalLibre() {
 			for (int i = 0; i < etals.length; i++) {
-				
-				if(!etals[0].isEtalOccupe()) return i;
+				if(!(etals[i].isEtalOccupe())) {
+					return i;
+				}
 			}
 			return -1;
 		}
 		
 		private Etal[] trouverEtals(String produit) {
-			Etal[] etalproduit = new Etal[10];
 			int nbProduitTrouver=0;
-			for (int i = 0; i < etals.length && nbProduitTrouver<10; i++) if(etals[i].contientProduit(produit)) etalproduit[i]=etals[i];
+			for (int i = 0; i < etals.length; i++) {
+				if(etals[i].isEtalOccupe() && etals[i].contientProduit(produit)) {
+					nbProduitTrouver++;
+				}
+			}
+			Etal[] etalproduit = new Etal[nbProduitTrouver];
+			nbProduitTrouver=0;
+			for(int i=0; i<etals.length;i++)
+				if(etals[i].isEtalOccupe() && etals[i].contientProduit(produit)) {
+					etalproduit[nbProduitTrouver]=etals[i];
+					nbProduitTrouver++;
+				}
 			return etalproduit;
 		}
 		
@@ -119,7 +135,7 @@ public class Village {
 		return chaine.toString();
 	}
 	
-	public String rechercherVendeursProduits(String produit) {
+	public String rechercherVendeursProduit(String produit) {
 		StringBuilder chaine = new StringBuilder();
 		Etal[] etals = new Etal[10];
 		etals=marche.trouverEtals(produit);
@@ -129,16 +145,28 @@ public class Village {
 		}
 		else if (etals.length==1)
 		{
-			chaine.append("Seul le vendeur Bonemine vend des fleurs au marché.");
+			chaine.append("Seul le vendeur " + (etals[0].getVendeur()).getNom() +" vend des " + produit +" au marché.");
 		}
 		else
 		{
 			chaine.append("Les vendeurs qui proposent des fleurs sont :\n");
 			for(int i=0; i<etals.length; i++) {
-			chaine.append("- "+(etals[i].getVendeur()).getNom() +"\n");
+				chaine.append("- "+(etals[i].getVendeur()).getNom() +"\n");
 			}
 		}
 		return chaine.toString();
+	}
+	
+	public Etal rechercherEtal(Gaulois vendeur) {
+		return marche.trouverVendeur(vendeur);
+	}
+	
+	public String partirVendeur(Gaulois vendeur) {
+		return marche.trouverVendeur(vendeur).libererEtal();
+	}
+	
+	public String afficherMarche() {
+		return marche.afficherMarche();
 	}
 	
 }
